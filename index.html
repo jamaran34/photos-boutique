@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F6F5C">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Photos Boutique">
+<style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}</style>
+<title>Photos Boutique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+</head>
+<body>
+<style>
+/* Colonne unique de 560 px : reglages en haut, pile de resultats en dessous. */
+:root {
+  --bg:         #F1F3F2;
+  --surface:    #FFFFFF;
+  --surface-2:  #E8ECEA;
+  --line:       #D4DAD7;
+  --ink:        #171B1A;
+  --muted:      #5F6965;
+  --accent:     #1F6F5C;
+  --accent-soft:#DFEDE8;
+  --sur-accent: #FFFFFF;
+  --warn:       #8A5A12;
+  --warn-soft:  #F6EEDE;
+  --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:    'IBM Plex Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-data:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#131716; --surface:#1C211F; --surface-2:#262C29; --line:#2F3733;
+    --ink:#E7EBE9; --muted:#98A29E; --accent:#5FC0A3; --accent-soft:#1B342C; --sur-accent:#10201B;
+    --warn:#D7A64A; --warn-soft:#2E2819; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#131716; --surface:#1C211F; --surface-2:#262C29; --line:#2F3733;
+  --ink:#E7EBE9; --muted:#98A29E; --accent:#5FC0A3; --accent-soft:#1B342C; --sur-accent:#10201B;
+  --warn:#D7A64A; --warn-soft:#2E2819; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+.wrap {
+  max-width: 560px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+
+header { margin-bottom: 22px; }
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 6vw, 2rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+  text-wrap: balance;
+}
+.sous { color: var(--muted); margin: 0; font-size: 0.9rem; }
+
+.carte {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.bloc + .bloc { margin-top: 18px; }
+.etiquette {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.puce {
+  font: inherit;
+  font-size: 0.85rem;
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 7px 11px;
+  cursor: pointer;
+  min-width: 0;
+}
+.puce[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+}
+.puce:focus-visible, .bouton:focus-visible, input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.libre { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.champ { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 130px; }
+.champ span { font-size: 0.72rem; color: var(--muted); }
+.champ input {
+  font-family: var(--font-data);
+  font-size: 0.95rem;
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.resume {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-data);
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.resume b { color: var(--ink); font-weight: 500; }
+
+.bouton {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  background: var(--accent);
+  color: var(--sur-accent);
+  border: none;
+  border-radius: 9px;
+  padding: 14px 18px;
+  width: 100%;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+.bouton.second {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.bouton[disabled] { opacity: 0.5; cursor: default; }
+.note { font-size: 0.78rem; color: var(--muted); margin: 8px 0 0; text-align: center; }
+
+.vide {
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 22px 18px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.vide p { margin: 0 0 10px; }
+.vide ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-family: var(--font-data); font-size: 0.78rem; }
+
+.total {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: baseline;
+  font-family: var(--font-data);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.total strong { font-size: 1.05rem; color: var(--accent); font-weight: 500; }
+
+.ligne {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.vignette {
+  width: 56px; height: 56px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--surface-2);
+  display: block;
+}
+.infos { min-width: 0; }
+.nom {
+  font-weight: 500;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+  margin: 0 0 3px;
+}
+.chiffres {
+  font-family: var(--font-data);
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+.fleche { color: var(--accent); }
+.gain { color: var(--accent); }
+.badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.badge {
+  font-family: var(--font-data);
+  font-size: 0.68rem;
+  border-radius: 5px;
+  padding: 2px 7px;
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.badge.err { background: var(--warn-soft); color: var(--warn); font-weight: 500; }
+.lien {
+  font: inherit;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 10px;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.barre { height: 3px; background: var(--surface-2); border-radius: 2px; overflow: hidden; margin-bottom: 12px; }
+.barre i { display: block; height: 100%; background: var(--accent); width: 0; transition: width 0.2s; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Photos Boutique</h1>
+    <p class="sous">Redimensionne et compresse les photos produit avant mise en ligne. Tout se passe sur l'appareil, rien n'est envoyé.</p>
+  </header>
+
+  <div class="carte">
+    <div class="bloc">
+      <span class="etiquette" id="lbl-taille">Plus grand côté</span>
+      <div class="puces" role="group" aria-labelledby="lbl-taille" id="puces-taille">
+        <button type="button" class="puce" data-val="2048" aria-pressed="true">2048 px</button>
+        <button type="button" class="puce" data-val="1600" aria-pressed="false">1600 px</button>
+        <button type="button" class="puce" data-val="1024" aria-pressed="false">1024 px</button>
+        <button type="button" class="puce" data-val="0" aria-pressed="false">Origine</button>
+        <button type="button" class="puce" data-val="libre" aria-pressed="false">Autre</button>
+      </div>
+      <div class="libre" id="libre-taille" hidden>
+        <label class="champ">
+          <span>Pixels</span>
+          <input type="number" id="px-libre" value="2400" min="64" max="10000" step="1" inputmode="numeric">
+        </label>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <span class="etiquette" id="lbl-qualite">Qualité visée</span>
+      <div class="puces" role="group" aria-labelledby="lbl-qualite" id="puces-qualite">
+        <button type="button" class="puce" data-val="max" aria-pressed="false">Maximale</button>
+        <button type="button" class="puce" data-val="haute" aria-pressed="true">Élevée</button>
+        <button type="button" class="puce" data-val="std" aria-pressed="false">Standard</button>
+        <button type="button" class="puce" data-val="legere" aria-pressed="false">Légère</button>
+        <button type="button" class="puce" data-val="libre" aria-pressed="false">Autre</button>
+      </div>
+      <div class="libre" id="libre-qualite" hidden>
+        <label class="champ">
+          <span>Qualité de départ</span>
+          <input type="number" id="q-libre" value="85" min="50" max="95" step="1" inputmode="numeric">
+        </label>
+        <label class="champ">
+          <span>Poids maximum (Ko)</span>
+          <input type="number" id="ko-libre" value="400" min="20" max="20000" step="10" inputmode="numeric">
+        </label>
+      </div>
+    </div>
+
+    <p class="resume" id="resume"></p>
+  </div>
+
+  <input type="file" id="fichiers" accept="image/*" multiple hidden>
+  <button type="button" class="bouton" id="choisir">Choisir des photos</button>
+  <p class="note" id="note-choix">Plusieurs photos à la fois, c'est prévu.</p>
+
+  <div class="barre" id="barre" hidden><i></i></div>
+
+  <section id="zone-resultats" style="margin-top:22px">
+    <div class="vide" id="vide">
+      <p>Les photos traitées s'afficheront ici.</p>
+      <ul>
+        <li>dimensions finales</li>
+        <li>poids avant → après</li>
+        <li>qualité JPEG retenue</li>
+      </ul>
+    </div>
+    <p class="total" id="total" hidden></p>
+    <div id="liste"></div>
+    <button type="button" class="bouton second" id="tout" hidden>Tout enregistrer</button>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var PROFILS = {
+    max:    { q0: 90, qmin: 80, kobase: 800, nom: 'Maximale' },
+    haute:  { q0: 85, qmin: 72, kobase: 500, nom: 'Élevée' },
+    std:    { q0: 80, qmin: 65, kobase: 350, nom: 'Standard' },
+    legere: { q0: 75, qmin: 60, kobase: 200, nom: 'Légère' }
+  };
+  var REF = 2048 * 2048;          // reference de densite : une image carree 2048 px
+  var PLANCHER_CIBLE = 25 * 1024; // on ne vise jamais moins de 25 Ko
+  var LIMITE_MPX = 20000000;      // limite Shopify : 20 megapixels
+  var LIMITE_OCTETS = 20 * 1024 * 1024;
+
+  var etat = { taille: '2048', qualite: 'haute' };
+  var resultats = [];
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  // --- reglages memorises d'une visite a l'autre ---
+  try {
+    var sauve = JSON.parse(localStorage.getItem('photos-boutique') || '{}');
+    if (sauve.taille) { etat.taille = sauve.taille; }
+    if (sauve.qualite) { etat.qualite = sauve.qualite; }
+  } catch (e) { /* stockage indisponible : on garde les valeurs par defaut */ }
+
+  function memoriser() {
+    try { localStorage.setItem('photos-boutique', JSON.stringify(etat)); } catch (e) {}
+  }
+
+  function groupe(conteneur, cle, apres) {
+    var boutons = conteneur.querySelectorAll('.puce');
+    Array.prototype.forEach.call(boutons, function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.val === etat[cle]));
+      b.addEventListener('click', function () {
+        etat[cle] = b.dataset.val;
+        Array.prototype.forEach.call(boutons, function (o) {
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+        memoriser();
+        apres();
+      });
+    });
+  }
+
+  function maxPx() {
+    if (etat.taille === 'libre') { return Math.max(64, parseInt($('px-libre').value, 10) || 2048); }
+    return parseInt(etat.taille, 10);
+  }
+
+  function reglagesQualite() {
+    if (etat.qualite === 'libre') {
+      var q = Math.min(95, Math.max(50, parseInt($('q-libre').value, 10) || 85));
+      var ko = Math.max(20, parseInt($('ko-libre').value, 10) || 400);
+      return { q0: q, qmin: Math.max(50, q - 20), fixe: ko * 1024 };
+    }
+    var p = PROFILS[etat.qualite];
+    return { q0: p.q0, qmin: p.qmin, kobase: p.kobase };
+  }
+
+  function cibleOctets(r, px) {
+    if (r.fixe) { return r.fixe; }
+    return Math.max(PLANCHER_CIBLE, Math.round(r.kobase * 1024 * px / REF));
+  }
+
+  function ko(n) { return Math.round(n / 1024).toLocaleString('fr-FR') + ' Ko'; }
+
+  function majResume() {
+    $('libre-taille').hidden = etat.taille !== 'libre';
+    $('libre-qualite').hidden = etat.qualite !== 'libre';
+
+    var m = maxPx();
+    var r = reglagesQualite();
+    var txtTaille = m === 0 ? 'Dimension d’origine conservée' : 'Réduction à ' + m + ' px maximum';
+    var txtCible;
+    if (r.fixe) {
+      txtCible = 'poids maximum ' + ko(r.fixe);
+    } else if (m === 0) {
+      txtCible = 'cible proportionnelle, ' + r.kobase + ' Ko pour 2048 × 2048 px';
+    } else {
+      txtCible = 'cible ' + ko(cibleOctets(r, m * m)) + ' pour un carré de ' + m + ' px';
+    }
+    $('resume').innerHTML = '<b>' + txtTaille + '</b> · ' + txtCible +
+      ' · qualité ' + r.q0 + ' à ' + r.qmin;
+  }
+
+  groupe($('puces-taille'), 'taille', majResume);
+  groupe($('puces-qualite'), 'qualite', majResume);
+  ['px-libre', 'q-libre', 'ko-libre'].forEach(function (id) {
+    $(id).addEventListener('input', majResume);
+  });
+  majResume();
+
+  // --- traitement d'une image ---
+  function versBlob(canvas, q) {
+    return new Promise(function (res) { canvas.toBlob(res, 'image/jpeg', q / 100); });
+  }
+
+  async function lireImage(file) {
+    if (window.createImageBitmap) {
+      try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+      catch (e) { try { return await createImageBitmap(file); } catch (e2) {} }
+    }
+    return await new Promise(function (res, rej) {
+      var img = new Image();
+      img.onload = function () { res(img); };
+      img.onerror = function () { rej(new Error('format non reconnu')); };
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  async function traiter(file, r) {
+    var src = await lireImage(file);
+    var w = src.width, h = src.height;
+    var m = maxPx();
+    var ratio = 1;
+    if (m > 0 && (w > m || h > m)) { ratio = w >= h ? m / w : m / h; }
+    var nw = Math.round(w * ratio), nh = Math.round(h * ratio);
+
+    var canvas = document.createElement('canvas');
+    canvas.width = nw; canvas.height = nh;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, nw, nh);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(src, 0, 0, nw, nh);
+    if (src.close) { src.close(); }
+
+    var cible = cibleOctets(r, nw * nh);
+    var q = r.q0, blob = null;
+    while (true) {
+      blob = await versBlob(canvas, q);
+      if (!blob) { throw new Error('encodage impossible'); }
+      if (blob.size <= cible || q <= r.qmin) { break; }
+      q = Math.max(r.qmin, q - 5);
+    }
+
+    return {
+      nom: file.name.replace(/\.[^.]+$/, '') + '.jpg',
+      avant: file.size, apres: blob.size,
+      w: nw, h: nh, q: q,
+      plancher: blob.size > cible,
+      blob: blob,
+      url: URL.createObjectURL(blob)
+    };
+  }
+
+  function afficher(res) {
+    var el = document.createElement('div');
+    el.className = 'ligne';
+
+    var vignette = document.createElement('img');
+    vignette.className = 'vignette';
+    vignette.alt = '';
+    if (res.url) { vignette.src = res.url; }
+    el.appendChild(vignette);
+
+    var infos = document.createElement('div');
+    infos.className = 'infos';
+
+    var nom = document.createElement('p');
+    nom.className = 'nom';
+    nom.textContent = res.nom;
+    infos.appendChild(nom);
+
+    var chiffres = document.createElement('p');
+    chiffres.className = 'chiffres';
+    if (res.erreur) {
+      chiffres.textContent = res.erreur;
+    } else {
+      var gain = Math.round(100 - res.apres / res.avant * 100);
+      chiffres.innerHTML = res.w + ' × ' + res.h + ' px · ' + ko(res.avant) +
+        ' <span class="fleche">→</span> ' + ko(res.apres) +
+        (gain > 0 ? ' <span class="gain">−' + gain + ' %</span>' : '') +
+        ' · q' + res.q;
+    }
+    infos.appendChild(chiffres);
+
+    var badges = document.createElement('div');
+    badges.className = 'badges';
+    if (res.erreur) {
+      var be = document.createElement('span');
+      be.className = 'badge err';
+      be.textContent = 'non traitée';
+      badges.appendChild(be);
+    } else {
+      if (res.plancher) { badges.appendChild(etiq('plancher qualité atteint')); }
+      if (res.w * res.h > LIMITE_MPX) {
+        badges.appendChild(etiq((res.w * res.h / 1e6).toFixed(1) + ' Mpx — au-delà des 20 Mpx Shopify'));
+      }
+      if (res.apres > LIMITE_OCTETS) { badges.appendChild(etiq('au-delà des 20 Mo Shopify')); }
+    }
+    if (badges.children.length) { infos.appendChild(badges); }
+
+    if (!res.erreur) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'lien';
+      b.textContent = 'Enregistrer';
+      b.addEventListener('click', function () { enregistrer(res, b); });
+      infos.appendChild(b);
+    }
+
+    el.appendChild(infos);
+    $('liste').appendChild(el);
+  }
+
+  var capaDl;
+  function capacite() {
+    if (capaDl === undefined) {
+      capaDl = (window.claude && window.claude.use)
+        ? window.claude.use('downloads').catch(function () { return null; })
+        : Promise.resolve(null);
+    }
+    return capaDl;
+  }
+
+  async function enregistrer(res, bouton) {
+    var dl = await capacite();
+    if (!dl) {                       // site heberge : telechargement direct
+      var a = document.createElement('a');
+      a.href = res.url; a.download = res.nom;
+      document.body.appendChild(a); a.click(); a.remove();
+      return true;
+    }
+    var avant = bouton ? bouton.textContent : '';
+    if (bouton) { bouton.textContent = 'Enregistrement\u2026'; bouton.disabled = true; }
+    try {
+      await dl.save({ filename: res.nom, data: res.blob });
+      if (bouton) { bouton.textContent = 'Enregistré'; }
+      return true;
+    } catch (e) {
+      if (bouton) { bouton.textContent = e && e.code === 'declined' ? avant : 'Échec'; }
+      return false;
+    } finally {
+      if (bouton) { bouton.disabled = false; }
+    }
+  }
+
+  function etiq(texte) {
+    var s = document.createElement('span');
+    s.className = 'badge';
+    s.textContent = texte;
+    return s;
+  }
+
+  function majTotal() {
+    var ok = resultats.filter(function (r) { return !r.erreur; });
+    if (!ok.length) { return; }
+    var av = ok.reduce(function (s, r) { return s + r.avant; }, 0);
+    var ap = ok.reduce(function (s, r) { return s + r.apres; }, 0);
+    var gain = Math.round(100 - ap / av * 100);
+    $('total').hidden = false;
+    $('total').innerHTML = '<strong>' + ok.length + (ok.length > 1 ? ' photos' : ' photo') + '</strong>' +
+      '<span>' + ko(av) + ' → ' + ko(ap) + (gain > 0 ? ', soit −' + gain + ' %' : '') + '</span>';
+    $('tout').hidden = ok.length < 2;
+  }
+
+  async function lancer(fichiers) {
+    if (!fichiers || !fichiers.length) { return; }
+    $('vide').hidden = true;
+    $('choisir').disabled = true;
+    $('barre').hidden = false;
+    var r = reglagesQualite();
+
+    for (var i = 0; i < fichiers.length; i++) {
+      $('barre').firstElementChild.style.width = Math.round(i / fichiers.length * 100) + '%';
+      var res;
+      try {
+        res = await traiter(fichiers[i], r);
+      } catch (e) {
+        res = { nom: fichiers[i].name, erreur: e.message || 'erreur de lecture', erreurVraie: true };
+      }
+      resultats.push(res);
+      afficher(res);
+      majTotal();
+      await new Promise(function (ok) { setTimeout(ok, 0); });
+    }
+
+    $('barre').firstElementChild.style.width = '100%';
+    setTimeout(function () { $('barre').hidden = true; }, 300);
+    $('choisir').disabled = false;
+    $('choisir').textContent = 'Choisir d’autres photos';
+  }
+
+  $('choisir').addEventListener('click', function () { $('fichiers').click(); });
+  $('fichiers').addEventListener('change', function (e) {
+    lancer(Array.prototype.slice.call(e.target.files));
+    e.target.value = '';
+  });
+
+  $('tout').addEventListener('click', async function () {
+    var b = $('tout');
+    var liste = resultats.filter(function (r) { return !r.erreur; });
+    b.disabled = true;
+    for (var i = 0; i < liste.length; i++) {
+      b.textContent = 'Enregistrement ' + (i + 1) + ' sur ' + liste.length;
+      var ok = await enregistrer(liste[i], null);
+      if (!ok) { break; }
+      await new Promise(function (f) { setTimeout(f, 250); });
+    }
+    b.textContent = 'Tout enregistrer';
+    b.disabled = false;
+  });
+
+  // --- photos recues par le menu Partager d'Android ---
+  async function lirePartage() {
+    try {
+      var c = await caches.open('pb-partage');
+      var cles = await c.keys();
+      var fichiers = [];
+      for (var i = 0; i < cles.length; i++) {
+        var rep = await c.match(cles[i]);
+        var blob = await rep.blob();
+        var brut = rep.headers.get('X-Nom');
+        var nom = 'photo-' + (i + 1) + '.jpg';
+        if (brut) { try { nom = decodeURIComponent(brut); } catch (err) { nom = brut; } }
+        fichiers.push(new File([blob], nom, { type: blob.type || 'image/jpeg' }));
+      }
+      await Promise.all(cles.map(function (k) { return c.delete(k); }));
+      history.replaceState({}, '', './');
+      if (fichiers.length) { lancer(fichiers); }
+    } catch (e) { /* rien a recuperer */ }
+  }
+
+  try {
+    if (new URL(location.href).searchParams.get('partage')) { lirePartage(); }
+  } catch (e) {}
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function () { /* hors ligne non disponible */ });
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
